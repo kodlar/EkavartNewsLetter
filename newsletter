@@ -1,0 +1,81 @@
+<%@ WebHandler Language="C#" Class="NewsLetter" %>
+
+using System;
+using System.Web;
+using DAL;
+using System.Text;
+using System.Web.UI.WebControls;
+using System.Linq;
+public class NewsLetter : IHttpHandler
+{
+
+    public void ProcessRequest(HttpContext context) {
+        context.Response.ContentType = "text/html";
+
+        var db = new CmsDataContext();
+
+        var lst = db.NewsLetterSelectList(null).Take(1).ToList();
+        var lst2 = db.NewsLetterSelectList(null).Skip(1).Take(1).ToList();
+        var lst3 = db.NewsLetterSelectList(null).Skip(2).Take(1).ToList();
+        var lst4 = db.NewsLetterSelectList(null).Skip(3).Take(1).ToList();
+
+ context.Response.Write("<!DOCTYPE html><head><meta charset=\"UTF-8\"><title>Ekavart Moduler Newsletter</title><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><link rel=\"stylesheet\" href=\"http://cms.ekavart.tv/mailtemplates/bootstrap.min.css\"></head><body style=\"background-color: #454545\">");
+
+ context.Response.Write("<div class=\"container\"><div class=\"jumbotron\"><h1 class=\"text-center\"><img src=\"http://www.ekavart.tv/images/logo.png\" class=\"img-responsive\" alt=\"logo\"></h1><p class=\"text-center\">TÜRKİYE’NİN İLK ONLINE SANAT TELEVİZYONU...</p><p class=\"text-right\"><a href=\"http://www.ekavart.tv\" target=\"_blank\" class=\"btn btn-primary\" role=\"button\">WWW.EKAVART.TV</a></p></div></div>");
+
+ context.Response.Write("<div class=\"container\"><div class=\"row\">");
+
+	            foreach (var item in lst)
+                {
+                    context.Response.Write(tablom(item.Id.ToString(), item.Title, item.Spot, item.Link));
+                }
+
+                foreach (var item in lst2)
+                {
+                    context.Response.Write(tablom(item.Id.ToString(), item.Title, item.Spot, item.Link));
+                }
+
+				foreach (var item in lst3)
+				{
+					context.Response.Write(tablom(item.Id.ToString(), item.Title, item.Spot, item.Link));
+				}
+
+				foreach (var item in lst4)
+				{
+					context.Response.Write(tablom(item.Id.ToString(), item.Title, item.Spot, item.Link));
+				}
+
+  context.Response.Write("</div>");
+
+ context.Response.Write("<div class=\"well well-sm\"> <div class=\"row\"> <div class=\"col-sm-2\"><span class=\"label label-info\">TAKİP EDİN, SANATSIZ KALMAYIN!</span> </div><div class=\"col-sm-4\"> <ul class=\"list-inline\" style=\"padding-top: 5px; padding-left: 5px;\"> <li><a href=\"http://www.facebook.com/pages/Ekavart-Tv/160017037400909\" target=\"_blank\"> <img border=\"0\" src=\"http://cms.ekavart.tv/mailtemplates/f_icn.png\" width=\"27\" height=\"26\"/></a></li><li><a href=\"http://twitter.com/#!/ekavarttv\" target=\"_blank\"> <img border=\"0\" src=\"http://cms.ekavart.tv/mailtemplates/t_icn.png\" width=\"26\" height=\"26\"/> </a></li><li><a href=\"http://instagram.com/ekavarttv\" target=\"_blank\"> <img border=\"0\" src=\"http://cms.ekavart.tv/mailtemplates/instagram.png\" width=\"26\" height=\"26\"/> </a></li><li><a href=\"http://www.pinterest.com/ekavarttv/pins/\" target=\"_blank\"> <img border=\"0\" src=\"http://cms.ekavart.tv/mailtemplates/pin.png\" width=\"26\" height=\"26\"/> </a></li><li><a href=\"http://www.youtube.com/user/ekavarttv\" target=\"_blank\"> <img border=\"0\" src=\"http://cms.ekavart.tv/mailtemplates/youtube.jpg\" width=\"26\" height=\"26\"/> </a></li></ul> </div><div class=\"col-sm-6\"><p class=\"text-right\"> <span class=\"label label-warning\"> info@ekavart.tv Tel. +90 533 027 99 66 </span></p></div></div></div>");
+  context.Response.Write("</div>");
+ context.Response.Write("</body></html>");
+
+
+    }
+
+    public string tablom(string id, string title, string spot, string link)
+    {
+        StringBuilder sb = new StringBuilder();
+
+	     sb.Append("<div class=\"col-sm-3\">");
+         sb.Append("<h3><a href=\"" + link + "\" style=\"text-decoration:none;\">");
+	sb.Append("<img class=\"img-responsive img-thumbnail\" src=\"http://cms.ekavart.tv/handlers/LetterImage.ashx?Id=" + id + "\">");
+		 sb.Append("</a></h3>");
+		 sb.Append(" <p style=\"color:#e8b600;\">" + title + "</p>");
+         sb.Append("<p style=\"color:#fff;\">" + spot + "</p>");
+		 sb.Append("</div>");
+
+        return sb.ToString();
+
+    }
+
+    public bool IsReusable
+    {
+        get
+        {
+            return false;
+        }
+    }
+
+}
